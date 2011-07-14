@@ -901,12 +901,11 @@ sub _search_gin_subquery {
           unless ref $spec->{subqueries} eq 'ARRAY' &&
             scalar @{ $spec->{subqueries} };
 
-        return "(".
-          (
-           join ' '.$op.' ',
-           map { $self->_search_gin_subquery($_, $binds) }
-           @{ $spec->{subqueries} }
-          ).")";
+        return (
+            join ' '.$op.' ',
+            map { $self->_search_gin_subquery($_, $binds) }
+                @{ $spec->{subqueries} }
+        );
 
     } elsif ( $spec->{method} eq 'all' and @v > 1) {
         # for some reason count(id) = ? doesn't work
