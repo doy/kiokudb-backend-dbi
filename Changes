@@ -1,3 +1,5 @@
+    - Fix parentheses being used to circumvent sub-query in IN clause. (pecastro)
+
 1.20
     - Fix some stuff with recent DBIx::Class (arcanez)
 

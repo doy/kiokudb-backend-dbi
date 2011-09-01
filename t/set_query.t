@@ -85,4 +85,27 @@ lives_ok {
     ok(!$results->next, 'no more posts');
 };
 
+lives_ok {
+    # 1: (a:a or a:b or a:c) INTERSECT (d:q and d:p)
+    # should return the objects a=a and a=b
+    my $results = $kiokudb->search
+      ( Search::GIN::Query::Set->new
+        ( operation => 'INTERSECT',
+          subqueries =>
+          [ Search::GIN::Query::Manual->new
+            ( values =>
+              { a => [qw(a b c)] }
+            ),
+            Search::GIN::Query::Manual->new
+            ( values =>
+              { d => [qw(q p)] },
+            )
+          ]));
+    my $item = $results->next;
+    my @objects = @$item;
+    is(scalar @objects, 2, 'two object in the bulk');
+    is($objects[0]->a, 'a', 'Found the correct object');
+    ok(!$results->next, 'no more posts');
+};
+
 done_testing();
